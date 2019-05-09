@@ -1,0 +1,40 @@
+// You have to use clearKeyboard() inside of your main loop
+// Use keyDown() instead of key[] when you want to get single click
+// for example 
+
+/*
+
+if(keyDown(KEY_ESC){
+  // Something
+}
+
+instead of:
+
+if(key[KEY_ESC]){
+  // Something
+}
+
+*/
+
+int keyBoardController[128];
+
+int keyDown(int clicked){
+    if(key[clicked] && !keyBoardController[clicked]){
+        keyBoardController[clicked] = 1;
+        return 1;
+    }
+    return 0;
+}
+
+void clearKey(int id){
+    if(keyBoardController[id] == 1 && key[id] == 0){
+        keyBoardController[id] = 0;
+    }
+}
+
+void clearKeyboard(){
+    int i;
+    for(i=0;i<128;i++){
+        clearKey(i);
+    }
+}

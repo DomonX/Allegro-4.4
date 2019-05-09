@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <allegro.h>
+
+#define SCREEN_WIDTH 900
+#define SCREEN_HEIGHT 900
+
+int main() {
+    allegro_init();
+    install_keyboard();
+
+    set_color_depth(24);
+    set_gfx_mode(GFX_AUTODETECT_WINDOWED,SCREEN_WIDTH,SCREEN_HEIGHT,0,0);
+    show_mouse(screen);
+    while(!key[KEY_ESC]){
+      rest(1);
+    }
+    return 0;
+}
+END_OF_MAIN();

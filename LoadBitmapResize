@@ -1,0 +1,10 @@
+BITMAP * load_bitmap_resize(char * path, int w, int h) {
+    BITMAP * temp = load_bitmap(path,default_palette);
+    BITMAP * resized = create_bitmap(w,h);
+    stretch_blit(temp,resized,0,0,temp->w,temp->h,0,0,w,h);
+    destroy_bitmap(temp);
+    return resized;
+}
+int size_x = 0;
+int size_y = 0;
+BITMAP * myBitmap = load_bitmap_resize("myBitmap.bmp",size_x,size_y);

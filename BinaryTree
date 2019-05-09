@@ -1,0 +1,20 @@
+#define RAD 8
+
+struct tree{
+    int data;
+    struct tree * left;
+    struct tree * right;
+};
+
+void printTree(struct tree * sourceTree, int screen_x, int screen_x2, int i) {
+    if(sourceTree->left != NULL){
+        makeCircles(sourceTree->left, screen_x, (screen_x+screen_x2)/2, i+1);
+    }
+    if(sourceTree->right != NULL){
+        makeCircles(sourceTree->right, (screen_x+screen_x2)/2, screen_x2, i+1);
+    }
+    int x = (screen_x+screen_x2)/2;
+    int y = RAD+i*RAD*5;
+    circle(screen, x, y, RAD, makecol(125,125,125));
+    textprintf_ex(screen,font,x-3,y-3,makecol(125,125,125),-1,"%d", sourceTree->data);
+}

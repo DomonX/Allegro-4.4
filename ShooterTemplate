@@ -1,0 +1,142 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <allegro.h>
+#include <math.h>
+
+struct enemy{
+    double pos_x;
+    double pos_y;
+    double real_pos_x;
+    double real_pos_y;
+    double width;
+    double height;
+    BITMAP * image;
+};
+
+struct player{
+    double pos_x;
+    double pos_y;
+    double real_pos_x;
+    double real_pos_y;
+    double width;
+    double height;
+    BITMAP * image;
+};
+
+int main(){
+    allegro_init();
+    install_keyboard();
+    install_mouse();
+    set_window_title("Projekt");
+    set_color_depth(24);
+    set_trans_blender(255, 255, 255, 255);
+    int screen_resolution_x = 1600;
+    int screen_resolution_y = 900;
+    set_gfx_mode( GFX_AUTODETECT_WINDOWED,screen_resolution_x,screen_resolution_y,0,0 );
+    show_mouse(screen);
+
+    BITMAP * bufor = create_bitmap(screen_resolution_x,screen_resolution_y);
+
+    struct enemy player1;
+    player1.image = load_bitmap("img/char.bmp", default_palette);
+    player1.pos_x = 0;
+    player1.pos_y = 0;
+    player1.width = player1.image->w;
+    player1.height = player1.image->h;
+    double L = 0;
+
+    struct enemy enemy1;
+    enemy1.image = load_bitmap("img/enemy.bmp", default_palette);
+    enemy1.pos_x = 800;
+    enemy1.pos_y = 800;
+    enemy1.width = enemy1.image->w;
+    enemy1.height = enemy1.image->h;
+    enemy1.real_pos_x = enemy1.pos_x + enemy1.width/2;
+    enemy1.real_pos_y = enemy1.pos_y + enemy1.height/2;
+
+    double playerSpeed = 5;
+
+    double speed = 4;
+
+    int keyz = 0;
+
+    while(!key[KEY_ESC]){
+            if(key[KEY_LEFT]){
+               player1.pos_x = player1.pos_x - playerSpeed;
+               keyz = 1;
+            }
+
+            if(key[KEY_RIGHT]){
+                player1.pos_x = player1.pos_x + playerSpeed;
+                keyz = 2;
+            }
+
+            if(key[KEY_UP] && keyz != 2 && keyz != 1){
+                player1.pos_y = player1.pos_y - playerSpeed;
+            }else if(key[KEY_UP] && keyz != 2 && keyz == 1){
+                player1.pos_y = player1.pos_y - playerSpeed/2;
+                player1.pos_x = player1.pos_x + playerSpeed/2;
+            }else if(key[KEY_UP] && keyz == 2 && keyz != 1){
+                player1.pos_y = player1.pos_y - playerSpeed/2;
+                player1.pos_x = player1.pos_x - playerSpeed/2;
+            }
+
+            if(key[KEY_DOWN] && keyz != 2 && keyz != 1){
+                player1.pos_y = player1.pos_y + playerSpeed;
+            }else if(key[KEY_DOWN] && keyz != 2 && keyz == 1){
+                player1.pos_y = player1.pos_y + playerSpeed/2;
+                player1.pos_x = player1.pos_x + playerSpeed/2;
+            }else if(key[KEY_DOWN] && keyz == 2 && keyz != 1){
+                player1.pos_y = player1.pos_y + playerSpeed/2;
+                player1.pos_x = player1.pos_x - playerSpeed/2;
+            }
+            keyz = 0;
+            player1.real_pos_x = player1.pos_x + player1.width/2;
+            player1.real_pos_y = player1.pos_y + player1.height/2;
+
+            clear_to_color(bufor, makecol( 255, 255, 255 ));
+
+            if(mouse_x > player1.real_pos_x && mouse_y < player1.real_pos_y){
+                double a = abs(mouse_x - player1.real_pos_x);
+                double b = abs(mouse_y - player1.real_pos_y);
+                L = atan(a/b);
+                L = (L * 40);
+            }
+
+            if(mouse_x > player1.real_pos_x && mouse_y > player1.real_pos_y){
+                double a = abs(mouse_x - player1.real_pos_x);
+                double b = abs(mouse_y - player1.real_pos_y);
+                L = atan(a/b);
+                L = (90+45 - L * 40);
+            }
+
+            if(mouse_x < player1.real_pos_x && mouse_y > player1.real_pos_y){
+                double a = abs(mouse_x - player1.real_pos_x);
+                double b = abs(mouse_y - player1.real_pos_y);
+                L = atan(a/b);
+                L = (L * 40 + 128);
+            }
+
+            if(mouse_x < player1.real_pos_x && mouse_y < player1.real_pos_y){
+                double a = abs(mouse_x - player1.real_pos_x);
+                double b = abs(mouse_y - player1.real_pos_y);
+                L = atan(a/b);
+                L = (255 - (L * 40));
+            }
+            double x = fabs(enemy1.real_pos_x-player1.real_pos_x) + fabs(enemy1.real_pos_y-player1.real_pos_y);
+            double y = enemy1.real_pos_x-player1.real_pos_x;
+            double z = enemy1.real_pos_y-player1.real_pos_y;
+            enemy1.pos_x -= speed*y/x;
+            enemy1.pos_y -= speed*z/x;
+            printf("%lf\n", y/x);
+
+
+            enemy1.real_pos_x = enemy1.pos_x + enemy1.width/2;
+            enemy1.real_pos_y = enemy1.pos_y + enemy1.height/2;
+
+            rotate_sprite(bufor,player1.image,player1.pos_x,player1.pos_y,ftofix(L));
+            draw_trans_sprite(bufor,enemy1.image,enemy1.pos_x,enemy1.pos_y);
+            draw_trans_sprite(screen,bufor,0,0);
+    }
+}
+END_OF_MAIN()

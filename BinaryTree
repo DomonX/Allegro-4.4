@@ -8,10 +8,10 @@ struct tree{
 
 void printTree(struct tree * sourceTree, int screen_x, int screen_x2, int i) {
     if(sourceTree->left != NULL){
-        makeCircles(sourceTree->left, screen_x, (screen_x+screen_x2)/2, i+1);
+        printTree(sourceTree->left, screen_x, (screen_x+screen_x2)/2, i+1);
     }
     if(sourceTree->right != NULL){
-        makeCircles(sourceTree->right, (screen_x+screen_x2)/2, screen_x2, i+1);
+        printTree(sourceTree->right, (screen_x+screen_x2)/2, screen_x2, i+1);
     }
     int x = (screen_x+screen_x2)/2;
     int y = RAD+i*RAD*5;
